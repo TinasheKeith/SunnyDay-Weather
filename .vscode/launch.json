@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Development",
+        "program": "lib/main_dev.dart",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+            "--dart-define=FLAVOR=dev",
+            "--dart-define",
+           "OPEN_WEATHER_KEY=f45916370e0adb05b5a7c3850178762a"
+        ],
+      },
+      {
+        "name": "Staging",
+        "program": "lib/main_staging.dart",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+            "--dart-define=FLAVOR=staging",
+            "--dart-define",
+           "OPEN_WEATHER_KEY=0342aac85d92c9e63a468497d7bb1b0e"
+        ],
+      },
+      {
+        "name": "Production",
+        "program": "lib/main_prod.dart",
+        "request": "launch",
+        "type": "dart",
+        "args": [
+            "--flavor",
+            "prod",
+            "--dart-define",
+           "OPEN_WEATHER_KEY=0ade06c01e13b43362d217ca33e4a856"
+        ],
+      }
+    ]
+  }
+  
