@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:sunny_day/src/providers/bottom_navigation_provider.dart';
 import 'package:sunny_day/src/screens/favourites_screen/favourites_screen.dart';
 import 'package:sunny_day/src/screens/weather_screen/weather_screen.dart';
+import 'package:sunny_day/src/screens/weather_screen/weather_screen_view_model.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   const BottomNavigationWidget({super.key});

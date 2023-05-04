@@ -17,7 +17,7 @@ GetIt locator = GetIt.instance;
 /// Registers a singleton instance of [WeatherService] with the
 /// API key [Keys.openWeatherKey] as a dependency.
 ///
-/// Registers a singleton instance of [LocationPermissionService] as a
+/// Registers a singleton instance of [LocationService] as a
 /// dependency.
 ///
 /// Registers a singleton instance of [SharedPreferencesService] with [flavor]
@@ -31,7 +31,7 @@ void setupLocator({
       () => WeatherService(apiKey: Keys.openWeatherKey),
     )
     ..registerLazySingleton(
-      LocationPermissionService.new,
+      LocationService.new,
     )
     ..registerLazySingleton(
       () => SharedPreferencesService(flavor),
