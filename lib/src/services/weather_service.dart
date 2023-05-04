@@ -38,13 +38,13 @@ class WeatherService {
   final _weatherForecastController =
       StreamController<WeatherForecast>.broadcast();
 
-  Stream<CurrentWeather> get currentWeatherStream =>
+  Stream<CurrentWeather?> get currentWeatherStream =>
       _currentWeatherController.stream;
 
-  Stream<WeatherForecast> get weatherForecastStream =>
+  Stream<WeatherForecast?> get weatherForecastStream =>
       _weatherForecastController.stream;
 
-  Future<void> updateCurrentWeather({
+  Future<CurrentWeather?> updateCurrentWeather({
     required double latitude,
     required double longitude,
   }) async {
@@ -56,9 +56,11 @@ class WeatherService {
       _currentWeatherController.add(currentWeather);
 
       await _preferencesService.saveCurrentWeather(currentWeather);
-    } catch (e) {
-      print('Error updating current weather: $e');
-    }
+
+      return currentWeather;
+    } catch (e) {}
+
+    return null;
   }
 
   Future<void> updateWeatherForecast({
