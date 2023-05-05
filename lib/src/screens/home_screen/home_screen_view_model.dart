@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:sunny_day/src/locator.dart';
 import 'package:sunny_day/src/services/location_service.dart';
 import 'package:sunny_day/src/services/weather_service.dart';
@@ -84,6 +86,39 @@ class HomeScreenViewModel extends ChangeNotifier {
     } catch (e) {}
 
     notifyListeners();
+  }
+
+  IconData getWeatherIcon(WeatherInfo weather) {
+    final main = weather.main;
+    final description = weather.description;
+
+    switch (main.toLowerCase()) {
+      case 'thunderstorm':
+        return LineIcons.lightningBolt;
+      case 'drizzle':
+        return LineIcons.cloudWithSunAndRain;
+      case 'rain':
+        return LineIcons.cloudWithHeavyShowers;
+      case 'snow':
+        return LineIcons.snowflake;
+      case 'atmosphere':
+        return LineIcons.sun;
+      case 'clear':
+        return LineIcons.sun;
+      case 'clouds':
+        if (description.toLowerCase().contains('few clouds')) {
+          return LineIcons.cloud;
+        } else if (description.toLowerCase().contains('scattered clouds')) {
+          return LineIcons.cloud;
+        } else if (description.toLowerCase().contains('broken clouds') ||
+            description.toLowerCase().contains('overcast clouds')) {
+          return LineIcons.cloud;
+        }
+        break;
+      default:
+        return LineIcons.sun;
+    }
+    return LineIcons.sun;
   }
 
   Future<void> getWeatherForecast(double latitude, double longitude) async {
