@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/constants/assets.dart';
 import 'package:sunny_day/constants/connectivity_messages.dart';
+import 'package:sunny_day/src/screens/home_screen/forecast_details_sheet.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
@@ -92,7 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       return Column(
                         children: [
                           _CurrentWeatherWidget(viewModel.currentWeather!),
-                          _ForecastedWeatherWidget(viewModel.weatherForecast!)
+                          _ForecastedWeatherWidget(
+                            viewModel.weatherForecast!,
+                            viewModel,
+                          )
                         ],
                       );
                     }
@@ -191,9 +195,10 @@ class _CurrentWeatherWidget extends StatelessWidget {
 }
 
 class _ForecastedWeatherWidget extends StatelessWidget {
-  const _ForecastedWeatherWidget(this.forecast);
+  const _ForecastedWeatherWidget(this.forecast, this._viewModel);
 
   final WeatherForecast forecast;
+  final HomeScreenViewModel _viewModel;
 
   static final List<String> _daysOfWeek = [
     'Monday',
@@ -219,41 +224,90 @@ class _ForecastedWeatherWidget extends StatelessWidget {
             final value = entry.value;
             final dayOfWeek = daysOfWeek[index];
 
-            return ListTile(
-              leading: Text(
-                dayOfWeek,
-                style: const TextStyle(color: Colors.white),
-              ),
-              title: _TemperatureMinMaxWidget(
-                minTemp: value.main.tempMin,
-                maxTemp: value.main.tempMax,
-              ),
+            return Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      builder: (BuildContext context) {
+                        return ForecastDetailSheet(
+                          day: dayOfWeek,
+                          weather: value,
+                          place: _viewModel.currentWeather?.name,
+                        );
+                      },
+                    );
+                  },
+                  leading: SizedBox(
+                    width: 80,
+                    child: Text(
+                      dayOfWeek,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  title: _ForecastTile(
+                    minTemp: value.main.tempMin,
+                    maxTemp: value.main.tempMax,
+                    viewModel: _viewModel,
+                    weather: value.weather.last,
+                  ),
+                ),
+                Divider(
+                  color: Colors.white.withOpacity(0.2),
+                  height: 1,
+                  indent: 12,
+                  endIndent: 12,
+                  thickness: .5,
+                ),
+              ],
             );
           },
         ),
+        const SizedBox(height: 60),
       ],
     );
   }
 }
 
-class _TemperatureMinMaxWidget extends StatelessWidget {
-  const _TemperatureMinMaxWidget({
+class _ForecastTile extends StatelessWidget {
+  const _ForecastTile({
     required this.maxTemp,
     required this.minTemp,
+    required this.weather,
+    required this.viewModel,
   });
 
   final double maxTemp;
   final double minTemp;
+  final WeatherInfo weather;
+  final HomeScreenViewModel viewModel;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(
-          '${minTemp.ceil().toString()} - ${maxTemp.ceil().toString()}',
-          style: const TextStyle(color: Colors.white),
+        const Spacer(),
+        Icon(
+          viewModel.getWeatherIcon(weather),
+          color: Colors.white,
         ),
+        const Spacer(),
+        Text(
+          '${minTemp.ceil().toString()}°C - ${maxTemp.ceil().toString()}°C',
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(width: 12),
+        const Icon(
+          Icons.arrow_right,
+          color: Colors.white,
+        )
       ],
     );
   }
