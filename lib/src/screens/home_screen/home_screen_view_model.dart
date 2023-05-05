@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
