@@ -1,16 +1,58 @@
 // ignore_for_file: public_member_api_docs, noop_primitive_operations
 
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/constants/assets.dart';
+import 'package:sunny_day/constants/connectivity_messages.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static const id = 'home_screen';
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late StreamSubscription<ConnectivityResult> subscription;
+
+  @override
+  void initState() {
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            showCloseIcon: true,
+            closeIconColor: Colors.white,
+            duration: const Duration(
+              days: 1,
+            ),
+            content: Text(
+              // ignore: lines_longer_than_80_chars
+              ConnectivityMessages.getMessage(),
+            ),
+          ),
+        );
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

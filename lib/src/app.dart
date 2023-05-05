@@ -6,12 +6,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen.dart';
 
 /// The Widget that configures your application.
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   /// Creates a new instance of [App], which configures the application.
   const App({
     super.key,
   });
 
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
