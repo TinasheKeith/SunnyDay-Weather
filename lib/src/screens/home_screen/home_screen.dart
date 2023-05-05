@@ -3,17 +3,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/constants/assets.dart';
-import 'package:sunny_day/src/screens/weather_screen/weather_screen_view_model.dart';
+import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
-class TodayView extends StatelessWidget {
-  const TodayView({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  static const id = 'home_screen';
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => TodayScreenViewModel(),
+      create: (_) => HomeScreenViewModel(),
       child: SafeArea(
         child: Scaffold(
           backgroundColor: const Color(0xFF4a90e2),
@@ -24,7 +26,7 @@ class TodayView extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Consumer<TodayScreenViewModel>(
+                Consumer<HomeScreenViewModel>(
                   builder: (context, viewModel, child) {
                     if (viewModel.currentWeather == null &&
                         viewModel.userPosition != null) {

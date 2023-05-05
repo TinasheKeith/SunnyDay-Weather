@@ -5,7 +5,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/src/providers/bottom_navigation_provider.dart';
 import 'package:sunny_day/src/screens/favourites_screen/favourites_screen.dart';
-import 'package:sunny_day/src/screens/weather_screen/weather_screen.dart';
+import 'package:sunny_day/src/screens/home_screen/home_screen.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   const BottomNavigationWidget({super.key});
@@ -16,7 +16,7 @@ class BottomNavigationWidget extends StatefulWidget {
 
 class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   final List<Widget> _pages = [
-    const TodayView(),
+    const HomeScreen(),
     const FavouritesScreen(),
   ];
 

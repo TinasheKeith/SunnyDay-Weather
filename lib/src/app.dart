@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-import 'package:sunny_day/src/shared/home_navigation_widget.dart';
+import 'package:sunny_day/src/screens/home_screen/home_screen.dart';
 
 /// The Widget that configures your application.
 class App extends StatelessWidget {
@@ -29,7 +28,19 @@ class App extends StatelessWidget {
       onGenerateTitle: (BuildContext context) =>
           AppLocalizations.of(context)!.appTitle,
       theme: ThemeData(),
-      home: const BottomNavigationWidget(),
+      initialRoute: '/',
+      onGenerateRoute: (RouteSettings settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            );
+        }
+      },
     );
   }
 }

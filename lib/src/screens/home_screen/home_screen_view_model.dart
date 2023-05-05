@@ -7,8 +7,8 @@ import 'package:sunny_day/src/services/location_service.dart';
 import 'package:sunny_day/src/services/weather_service.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
-class TodayScreenViewModel extends ChangeNotifier {
-  TodayScreenViewModel() {
+class HomeScreenViewModel extends ChangeNotifier {
+  HomeScreenViewModel() {
     getUserPosition();
     _weatherService.currentWeatherStream.first;
   }
@@ -80,7 +80,7 @@ class TodayScreenViewModel extends ChangeNotifier {
         latitude: latitude,
         longitude: longitude,
       );
-      
+
       _weatherForecast = forecast;
     } catch (e) {}
 
