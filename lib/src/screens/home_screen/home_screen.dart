@@ -1,12 +1,9 @@
-// ignore_for_file: public_member_api_docs, noop_primitive_operations
-
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/constants/assets.dart';
-import 'package:sunny_day/constants/connectivity_messages.dart';
 import 'package:sunny_day/src/screens/home_screen/forecast_details_sheet.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
@@ -31,16 +28,16 @@ class _HomeScreenState extends State<HomeScreen> {
         .listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             behavior: SnackBarBehavior.floating,
             showCloseIcon: true,
             closeIconColor: Colors.white,
-            duration: const Duration(
+            duration:  Duration(
               days: 1,
             ),
             content: Text(
-              // ignore: lines_longer_than_80_chars
-              ConnectivityMessages.getMessage(),
+            // ignore: lines_longer_than_80_chars
+              'No internet? Just look out the window and take a wild guess at the weather!',
             ),
           ),
         );
