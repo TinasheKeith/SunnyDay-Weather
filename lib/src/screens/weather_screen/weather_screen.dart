@@ -1,76 +1,65 @@
-// ignore_for_file: public_member_api_docs
+// ignore_for_file: public_member_api_docs, noop_primitive_operations
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sunny_day/constants/assets.dart';
 import 'package:sunny_day/src/screens/weather_screen/weather_screen_view_model.dart';
-import 'package:sunny_day/src/shared/search_bar.dart';
+import 'package:sunny_day/src/shared/loading_widget.dart';
+import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
-class WeatherScreen extends StatefulWidget {
-  const WeatherScreen({super.key});
-
-  @override
-  State<WeatherScreen> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class TodayView extends StatelessWidget {
+  const TodayView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => WeatherScreenViewModel(),
+      create: (_) => TodayScreenViewModel(),
       child: SafeArea(
         child: Scaffold(
-          body: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 24),
-                child: SunnyDaySearchBar(),
-              ),
-              Center(
-                child: Consumer<WeatherScreenViewModel>(
+          backgroundColor: const Color(0xFF4a90e2),
+          body: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Consumer<TodayScreenViewModel>(
                   builder: (context, viewModel, child) {
                     if (viewModel.currentWeather == null &&
                         viewModel.userPosition != null) {
-                      viewModel.getCurrentWeather(
-                        viewModel.userPosition!.latitude,
-                        viewModel.userPosition!.longitude,
-                      );
+                      viewModel
+                        ..getCurrentWeather(
+                          viewModel.userPosition!.latitude,
+                          viewModel.userPosition!.longitude,
+                        )
+                        ..getWeatherForecast(
+                          viewModel.userPosition!.latitude,
+                          viewModel.userPosition!.longitude,
+                        );
 
-                      return const CircularProgressIndicator();
+                      return const Center(
+                        child: SpinningCloudWidget(),
+                      );
                     }
 
-                    if (viewModel.currentWeather != null) {
+                    if (viewModel.currentWeather != null &&
+                        viewModel.weatherForecast != null) {
                       return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '${viewModel.kelvinToCelsius(
-                              viewModel.currentWeather!.main.temp,
-                            )}°C',
-                            style: Theme.of(context).textTheme.displayLarge,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            viewModel.currentWeather!.name,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          Text(
-                            viewModel.currentWeather!.weather.first.description,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
+                          _CurrentWeatherWidget(viewModel.currentWeather!),
+                          _ForecastedWeatherWidget(viewModel.weatherForecast!)
                         ],
                       );
                     }
 
-                    return const CircularProgressIndicator();
+                    return const Center(
+                      child: SpinningCloudWidget(),
+                    );
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -78,26 +67,188 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 }
 
-class LocationPermissionRequiredWidget extends StatelessWidget {
-  const LocationPermissionRequiredWidget(
-    this._viewModel, {
-    super.key,
-  });
+class _CurrentWeatherWidget extends StatelessWidget {
+  const _CurrentWeatherWidget(this.currentWeather);
 
-  final WeatherScreenViewModel _viewModel;
+  final CurrentWeather currentWeather;
+
+  int _kelvinToCelsius(double temperatureInKelvin) {
+    return (temperatureInKelvin - 273.15).ceil();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(Assets.seaSunny),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 24),
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: '${_kelvinToCelsius(currentWeather.main.temp)}',
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 80,
+                        color: Colors.white,
+                      ),
+                ),
+                TextSpan(
+                  text: '°C',
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
+                      ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            currentWeather.name,
+            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                  color: Colors.white,
+                ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            currentWeather.weather.first.description,
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+          ),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _TemperatureTile(
+                temperature: currentWeather.main.tempMin,
+                title: 'Min',
+              ),
+              _TemperatureTile(
+                temperature: currentWeather.main.tempMax,
+                title: 'Max',
+              ),
+            ],
+          ),
+          const SizedBox(height: 60),
+        ],
+      ),
+    );
+  }
+}
+
+class _ForecastedWeatherWidget extends StatelessWidget {
+  const _ForecastedWeatherWidget(this.forecast);
+
+  final WeatherForecast forecast;
+
+  static final List<String> _daysOfWeek = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final daysOfWeek =
+        List.generate(5, (i) => _daysOfWeek[(today.weekday + i) % 7]);
+
     return Column(
       children: [
-        const Text('To continue, SunnyDay requires access to your location.'),
-        ElevatedButton(
-          child: const Text('Enable'),
-          onPressed: () async {
-            await _viewModel.hasLocationPermissions();
+        ...forecast.list.asMap().entries.map(
+          (entry) {
+            final index = entry.key;
+            final value = entry.value;
+            final dayOfWeek = daysOfWeek[index];
+
+            return ListTile(
+              leading: Text(
+                dayOfWeek,
+                style: const TextStyle(color: Colors.white),
+              ),
+              title: _TemperatureMinMaxWidget(
+                minTemp: value.main.tempMin,
+                maxTemp: value.main.tempMax,
+              ),
+            );
           },
         ),
       ],
+    );
+  }
+}
+
+class _TemperatureMinMaxWidget extends StatelessWidget {
+  const _TemperatureMinMaxWidget({
+    required this.maxTemp,
+    required this.minTemp,
+  });
+
+  final double maxTemp;
+  final double minTemp;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          '${minTemp.ceil().toString()} - ${maxTemp.ceil().toString()}',
+          style: const TextStyle(color: Colors.white),
+        ),
+      ],
+    );
+  }
+}
+
+class _TemperatureTile extends StatelessWidget {
+  const _TemperatureTile({
+    required this.title,
+    required this.temperature,
+  });
+
+  final double temperature;
+  final String title;
+
+  int _kelvinToCelsius(double temperatureInKelvin) {
+    return (temperatureInKelvin - 273.15).ceil();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: '$title ${_kelvinToCelsius(temperature).toString()}',
+            style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+          ),
+          TextSpan(
+            text: '°C',
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.white,
+                ),
+          ),
+        ],
+      ),
     );
   }
 }

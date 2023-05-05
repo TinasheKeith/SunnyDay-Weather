@@ -7,8 +7,8 @@ import 'package:sunny_day/src/services/location_service.dart';
 import 'package:sunny_day/src/services/weather_service.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
-class WeatherScreenViewModel extends ChangeNotifier {
-  WeatherScreenViewModel() {
+class TodayScreenViewModel extends ChangeNotifier {
+  TodayScreenViewModel() {
     getUserPosition();
     _weatherService.currentWeatherStream.first;
   }
@@ -61,10 +61,6 @@ class WeatherScreenViewModel extends ChangeNotifier {
     }
   }
 
-  int kelvinToCelsius(double temperatureInKelvin) {
-    return (temperatureInKelvin - 273.15).ceil();
-  }
-
   Future<void> getCurrentWeather(double latitude, double longitude) async {
     try {
       final weather = await _weatherService.updateCurrentWeather(
@@ -78,15 +74,14 @@ class WeatherScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateWeatherForecast(double latitude, double longitude) async {
-    notifyListeners();
-
+  Future<void> getWeatherForecast(double latitude, double longitude) async {
     try {
-      await _weatherService.updateWeatherForecast(
+      final forecast = await _weatherService.updateWeatherForecast(
         latitude: latitude,
         longitude: longitude,
       );
-      _weatherForecast = await _weatherService.weatherForecastStream.first;
+      
+      _weatherForecast = forecast;
     } catch (e) {}
 
     notifyListeners();

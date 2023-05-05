@@ -63,7 +63,7 @@ class WeatherService {
     return null;
   }
 
-  Future<void> updateWeatherForecast({
+  Future<WeatherForecast?> updateWeatherForecast({
     required double latitude,
     required double longitude,
     int days = 5,
@@ -80,9 +80,13 @@ class WeatherService {
       _weatherForecastController.add(weatherForecast);
 
       await _preferencesService.saveWeatherForecast(weatherForecast);
+
+      return weatherForecast;
     } catch (e) {
       print('Error updating weather forecast: $e');
     }
+
+    return null;
   }
 
   void dispose() {
