@@ -1,8 +1,8 @@
-### SunnyDay-Weather
+SunnyDay-Weather
 
 SunnyDay-Weather is a Flutter app that uses the OpenWeather API to display current weather conditions for a given location. It features a clean and intuitive UI that displays key weather data in an easy-to-read format.
 
-## Getting Started
+Getting Started
 
 To get started with SunnyDay-Weather, follow these steps:
 
@@ -16,10 +16,11 @@ Features
 SunnyDay-Weather includes the following features:
 
 Display of current weather conditions for a given location, including temperature, humidity, wind speed, and weather icon.
+Option to switch between Celsius and Fahrenheit units.
 Option to search for weather conditions in any location supported by the OpenWeather API.
-
-
-Technologies Used:
+Integration with the Google Maps Places API for location search and autocomplete.
+Option to save favorite locations for quick access.
+Technologies Used
 
 SunnyDay-Weather was built using the following technologies:
 
