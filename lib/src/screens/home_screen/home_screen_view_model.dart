@@ -10,7 +10,19 @@ import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 class HomeScreenViewModel extends ChangeNotifier {
   HomeScreenViewModel() {
     getUserPosition();
-    _weatherService.currentWeatherStream.first;
+    _weatherService.currentWeatherStream.first.then((value) {
+      if (_currentWeather == null) {
+        _currentWeather = value;
+        notifyListeners();
+      }
+    });
+
+    _weatherService.weatherForecastStream.first.then((value) {
+      if (_weatherForecast == null) {
+        _weatherForecast = value;
+        notifyListeners();
+      }
+    });
   }
 
   final WeatherService _weatherService = locator<WeatherService>();
