@@ -168,7 +168,7 @@ class _CurrentWeatherWidget extends StatelessWidget {
   final HomeScreenViewModel viewModel;
 
   int _kelvinToCelsius(double temperatureInKelvin) {
-    return (temperatureInKelvin - 273.15).ceil();
+    return (temperatureInKelvin - 273.15).round();
   }
 
   @override
@@ -356,7 +356,7 @@ class _ForecastTile extends StatelessWidget {
         ),
         const Spacer(),
         Text(
-          '${minTemp.ceil().toString()}°C - ${maxTemp.ceil().toString()}°C',
+          '${minTemp.round().toString()}°C - ${maxTemp.round().toString()}°C',
           style: const TextStyle(
             color: Colors.white,
           ),
@@ -381,7 +381,7 @@ class _TemperatureTile extends StatelessWidget {
   final String title;
 
   int _kelvinToCelsius(double temperatureInKelvin) {
-    return (temperatureInKelvin - 273.15).ceil();
+    return (temperatureInKelvin - 273.15).round();
   }
 
   @override
