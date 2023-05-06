@@ -356,7 +356,7 @@ class _ForecastTile extends StatelessWidget {
         ),
         const Spacer(),
         Text(
-          '${minTemp.ceil().toString()}°C - ${maxTemp.round().toString()}°C',
+          '${minTemp.round().toString()}°C - ${maxTemp.round().toString()}°C',
           style: const TextStyle(
             color: Colors.white,
           ),
