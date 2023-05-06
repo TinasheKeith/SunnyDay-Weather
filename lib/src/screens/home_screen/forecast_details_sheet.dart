@@ -64,7 +64,7 @@ class ForecastDetailSheet extends StatelessWidget {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: weather.main.temp.ceil().toString(),
+                          text: weather.main.temp.round().toString(),
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium!
