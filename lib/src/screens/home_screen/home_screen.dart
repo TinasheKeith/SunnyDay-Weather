@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sunny_day/constants/assets.dart';
 import 'package:sunny_day/src/screens/home_screen/forecast_details_sheet.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
@@ -32,11 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
             behavior: SnackBarBehavior.floating,
             showCloseIcon: true,
             closeIconColor: Colors.white,
-            duration:  Duration(
+            duration: Duration(
               days: 1,
             ),
             content: Text(
-            // ignore: lines_longer_than_80_chars
+              // ignore: lines_longer_than_80_chars
               'No internet? Just look out the window and take a wild guess at the weather!',
             ),
           ),
@@ -54,68 +53,119 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => HomeScreenViewModel(),
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: const Color(0xFF4a90e2),
-          body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics(),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Consumer<HomeScreenViewModel>(
-                  builder: (context, viewModel, child) {
-                    if (viewModel.currentWeather == null &&
-                        viewModel.userPosition != null) {
-                      viewModel
-                        ..getCurrentWeather(
-                          viewModel.userPosition!.latitude,
-                          viewModel.userPosition!.longitude,
-                        )
-                        ..getWeatherForecast(
-                          viewModel.userPosition!.latitude,
-                          viewModel.userPosition!.longitude,
-                        );
+    return Selector<HomeScreenViewModel, int>(
+      selector: (context, viewModel) => viewModel.themeColor,
+      builder: (context, value, child) {
+        return Scaffold(
+          backgroundColor: Color(value),
+          body: Stack(
+            children: [
+              RefreshIndicator(
+                onRefresh: () async {
+                  final viewModel = context.read<HomeScreenViewModel>();
 
-                      return const Center(
-                        child: SpinningCloudWidget(),
-                      );
-                    }
-
-                    if (viewModel.currentWeather != null &&
-                        viewModel.weatherForecast != null) {
-                      return Column(
-                        children: [
-                          _CurrentWeatherWidget(viewModel.currentWeather!),
-                          _ForecastedWeatherWidget(
-                            viewModel.weatherForecast!,
-                            viewModel,
-                          )
-                        ],
-                      );
-                    }
-
-                    return const Center(
-                      child: SpinningCloudWidget(),
+                  try {
+                    await viewModel.getCurrentWeather(
+                      viewModel.userPosition!.latitude,
+                      viewModel.userPosition!.longitude,
                     );
-                  },
+
+                    await viewModel.getWeatherForecast(
+                      viewModel.userPosition!.latitude,
+                      viewModel.userPosition!.longitude,
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        showCloseIcon: true,
+                        closeIconColor: Colors.white,
+                        duration: Duration(
+                          days: 1,
+                        ),
+                        content: Text(
+                          'Updated forecasts! ☀️',
+                        ),
+                      ),
+                    );
+                  } catch (e) {}
+                },
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.5),
+                        Colors.transparent,
+                      ],
+                      stops: const [
+                        0.0,
+                        0.33,
+                      ],
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Consumer<HomeScreenViewModel>(
+                          builder: (context, viewModel, child) {
+                            if (viewModel.currentWeather == null &&
+                                viewModel.userPosition != null) {
+                              viewModel
+                                ..getCurrentWeather(
+                                  viewModel.userPosition!.latitude,
+                                  viewModel.userPosition!.longitude,
+                                )
+                                ..getWeatherForecast(
+                                  viewModel.userPosition!.latitude,
+                                  viewModel.userPosition!.longitude,
+                                );
+
+                              return const Center(
+                                child: SpinningCloudWidget(),
+                              );
+                            }
+
+                            if (viewModel.currentWeather != null &&
+                                viewModel.weatherForecast != null) {
+                              return Column(
+                                children: [
+                                  _CurrentWeatherWidget(viewModel),
+                                  _ForecastedWeatherWidget(
+                                    viewModel.weatherForecast!,
+                                    viewModel,
+                                  )
+                                ],
+                              );
+                            }
+
+                            return const Center(
+                              child: SpinningCloudWidget(),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class _CurrentWeatherWidget extends StatelessWidget {
-  const _CurrentWeatherWidget(this.currentWeather);
+  const _CurrentWeatherWidget(this.viewModel);
 
-  final CurrentWeather currentWeather;
+  final HomeScreenViewModel viewModel;
 
   int _kelvinToCelsius(double temperatureInKelvin) {
     return (temperatureInKelvin - 273.15).ceil();
@@ -123,70 +173,81 @@ class _CurrentWeatherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(Assets.seaSunny),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(height: 24),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: '${_kelvinToCelsius(currentWeather.main.temp)}',
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 80,
-                        color: Colors.white,
-                      ),
-                ),
-                TextSpan(
-                  text: '°C',
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
-                      ),
-                ),
-              ],
+    return Selector<HomeScreenViewModel, String>(
+      selector: (context, viewModel) => viewModel.homescreenBackground,
+      builder: (context, value, child) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                value,
+              ),
+              fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(height: 16),
-          Text(
-            currentWeather.name,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  color: Colors.white,
-                ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            currentWeather.weather.first.description,
-            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                  fontSize: 16,
-                  color: Colors.white,
-                ),
-          ),
-          const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _TemperatureTile(
-                temperature: currentWeather.main.tempMin,
-                title: 'Min',
+              const SizedBox(height: 48),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '${_kelvinToCelsius(
+                        viewModel.currentWeather!.main.temp,
+                      )}',
+                      style:
+                          Theme.of(context).textTheme.displayMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 80,
+                                color: Colors.white,
+                              ),
+                    ),
+                    TextSpan(
+                      text: '°C',
+                      style:
+                          Theme.of(context).textTheme.displayMedium!.copyWith(
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white,
+                              ),
+                    ),
+                  ],
+                ),
               ),
-              _TemperatureTile(
-                temperature: currentWeather.main.tempMax,
-                title: 'Max',
+              const SizedBox(height: 16),
+              Text(
+                viewModel.currentWeather!.name,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: Colors.white,
+                    ),
               ),
+              const SizedBox(height: 16),
+              Text(
+                viewModel.currentWeather!.weather.first.description,
+                style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _TemperatureTile(
+                    temperature: viewModel.currentWeather!.main.tempMin,
+                    title: 'Min',
+                  ),
+                  _TemperatureTile(
+                    temperature: viewModel.currentWeather!.main.tempMax,
+                    title: 'Max',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 60),
             ],
           ),
-          const SizedBox(height: 60),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen.dart';
 
-/// The Widget that configures your application.
+import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
+
 class App extends StatefulWidget {
-  /// Creates a new instance of [App], which configures the application.
   const App({
     super.key,
   });
@@ -41,11 +42,25 @@ class _AppState extends State<App> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (_) => const HomeScreen(),
+              builder: (_) => MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (_) => HomeScreenViewModel(),
+                  ),
+                ],
+                child: const HomeScreen(),
+              ),
             );
           default:
             return MaterialPageRoute(
-              builder: (_) => const HomeScreen(),
+              builder: (_) => MultiProvider(
+                providers: [
+                  ChangeNotifierProvider(
+                    create: (_) => HomeScreenViewModel(),
+                  ),
+                ],
+                child: const HomeScreen(),
+              ),
             );
         }
       },

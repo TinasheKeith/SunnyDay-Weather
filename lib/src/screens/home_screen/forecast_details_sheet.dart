@@ -4,16 +4,16 @@ import 'package:line_icons/line_icons.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
 class ForecastDetailSheet extends StatelessWidget {
-  ForecastDetailSheet({
+  const ForecastDetailSheet({
     required this.day,
     required this.weather,
     required this.place,
     super.key,
   });
 
-  Weather weather;
-  String day;
-  String? place;
+  final Weather weather;
+  final String day;
+  final String? place;
 
   @override
   Widget build(BuildContext context) {

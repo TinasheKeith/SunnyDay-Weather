@@ -2,6 +2,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:sunny_day/constants/assets.dart';
+import 'package:sunny_day/constants/colors.dart';
 import 'package:sunny_day/src/locator.dart';
 import 'package:sunny_day/src/services/location_service.dart';
 import 'package:sunny_day/src/services/weather_service.dart';
@@ -10,6 +12,7 @@ import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 class HomeScreenViewModel extends ChangeNotifier {
   HomeScreenViewModel() {
     getUserPosition();
+
     _weatherService.currentWeatherStream.first.then((value) {
       if (_currentWeather == null) {
         _currentWeather = value;
@@ -27,6 +30,12 @@ class HomeScreenViewModel extends ChangeNotifier {
 
   final WeatherService _weatherService = locator<WeatherService>();
   final LocationService _locationService = locator<LocationService>();
+
+  int _themeColor = SunnyDayColors.sunny;
+  int get themeColor => _themeColor;
+
+  String _homescreenBackground = Assets.seaSunny;
+  String get homescreenBackground => _homescreenBackground;
 
   Position? _userPosition;
   Position? get userPosition => _userPosition;
@@ -81,6 +90,9 @@ class HomeScreenViewModel extends ChangeNotifier {
       );
 
       _currentWeather = weather;
+
+      updateHomescreenTheme(weather!.weather.first);
+      notifyListeners();
     } catch (e) {}
 
     notifyListeners();
@@ -117,6 +129,52 @@ class HomeScreenViewModel extends ChangeNotifier {
         return LineIcons.sun;
     }
     return LineIcons.sun;
+  }
+
+  void updateHomescreenTheme(CurrentWeatherData weather) {
+    final main = weather.main;
+
+    switch (main.toLowerCase()) {
+      case 'thunderstorm':
+        _themeColor = SunnyDayColors.rainy;
+        _homescreenBackground = Assets.seaRainy;
+        notifyListeners();
+        break;
+      case 'drizzle':
+        _themeColor = SunnyDayColors.rainy;
+        _homescreenBackground = Assets.seaRainy;
+        notifyListeners();
+        break;
+      case 'rain':
+        _themeColor = SunnyDayColors.rainy;
+        _homescreenBackground = Assets.seaRainy;
+        notifyListeners();
+        break;
+      case 'snow':
+        _themeColor = SunnyDayColors.cloudy;
+        _homescreenBackground = Assets.seaCloudy;
+        notifyListeners();
+        break;
+      case 'atmosphere':
+        _themeColor = SunnyDayColors.cloudy;
+        _homescreenBackground = Assets.seaCloudy;
+        notifyListeners();
+        break;
+      case 'clear':
+        _themeColor = SunnyDayColors.sunny;
+        _homescreenBackground = Assets.seaSunny;
+        notifyListeners();
+        break;
+      case 'clouds':
+        _themeColor = SunnyDayColors.cloudy;
+        _homescreenBackground = Assets.seaCloudy;
+        notifyListeners();
+        break;
+      default:
+        _themeColor = SunnyDayColors.cloudy;
+        _homescreenBackground = Assets.seaCloudy;
+        notifyListeners();
+    }
   }
 
   Future<void> getWeatherForecast(double latitude, double longitude) async {
