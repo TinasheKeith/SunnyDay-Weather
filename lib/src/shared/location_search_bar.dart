@@ -37,11 +37,13 @@ class LocationSearchBar extends StatelessWidget {
             ),
             Expanded(
               child: Material(
+                color: Colors.white,
                 child: TextField(
                   readOnly: true,
                   onTap: () => onSearchFieldTapped?.call(),
                   decoration: const InputDecoration.collapsed(
                     hintText: 'Search for city',
+                    fillColor: Colors.white,
                     hintStyle: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.normal,
