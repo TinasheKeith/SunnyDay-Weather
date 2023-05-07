@@ -35,7 +35,7 @@ class LocationSearchBar extends StatelessWidget {
                 },
                 icon: Icon(
                   Icons.menu_rounded,
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
             ),

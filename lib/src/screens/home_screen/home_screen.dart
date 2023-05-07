@@ -56,121 +56,134 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomeScreenViewModel, int>(
-      selector: (context, viewModel) => viewModel.themeColor,
-      builder: (context, value, child) {
-        return Scaffold(
-          drawer: const SunnyDayDrawer(),
-          floatingActionButton: LocationSearchBar(
-            onSearchFieldTapped: () {
-              Navigator.of(context).pushNamed(LocationSearchScreen.id);
-            },
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          backgroundColor: Color(value),
-          body: Stack(
-            children: [
-              RefreshIndicator(
-                color: Theme.of(context).primaryColor,
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                displacement: 100,
-                onRefresh: () async {
-                  final viewModel = context.read<HomeScreenViewModel>();
+    return Selector<HomeScreenViewModel, double?>(
+      selector: (context, viewModel) => viewModel.longitude,
+      builder: (context, viewModel, child) {
+        return Selector<HomeScreenViewModel, int>(
+          selector: (context, viewModel) => viewModel.themeColor,
+          builder: (context, value, child) {
+            return Scaffold(
+              drawer: SunnyDayDrawer(
+                onSavedPlaceCallback: (lat, lng) {
+                  context.read<HomeScreenViewModel>().setPlace(
+                        latitude: lat,
+                        longitude: lng,
+                      );
+                },
+              ),
+              floatingActionButton: LocationSearchBar(
+                onSearchFieldTapped: () {
+                  Navigator.of(context).pushNamed(LocationSearchScreen.id);
+                },
+              ),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+              backgroundColor: Color(value),
+              body: Stack(
+                children: [
+                  RefreshIndicator(
+                    color: Theme.of(context).primaryColor,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    displacement: 100,
+                    onRefresh: () async {
+                      final viewModel = context.read<HomeScreenViewModel>();
 
-                  try {
-                    await viewModel.getCurrentWeather(
-                      viewModel.userPosition!.latitude,
-                      viewModel.userPosition!.longitude,
-                    );
+                      try {
+                        await viewModel.getCurrentWeather(
+                          viewModel.latitude!,
+                          viewModel.longitude!,
+                        );
 
-                    await viewModel.getWeatherForecast(
-                      viewModel.userPosition!.latitude,
-                      viewModel.userPosition!.longitude,
-                    );
+                        await viewModel.getWeatherForecast(
+                          viewModel.latitude!,
+                          viewModel.longitude!,
+                        );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        behavior: SnackBarBehavior.floating,
-                        showCloseIcon: true,
-                        closeIconColor: Colors.white,
-                        duration: const Duration(
-                          seconds: 2,
-                        ),
-                        content: const Text(
-                          'Updated forecasts! ☀️',
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            behavior: SnackBarBehavior.floating,
+                            showCloseIcon: true,
+                            closeIconColor: Colors.white,
+                            duration: const Duration(
+                              seconds: 2,
+                            ),
+                            content: const Text(
+                              'Updated forecasts! ☀️',
+                            ),
+                          ),
+                        );
+                      } catch (e) {}
+                    },
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.5),
+                            Colors.transparent,
+                          ],
+                          stops: const [
+                            0.0,
+                            0.33,
+                          ],
                         ),
                       ),
-                    );
-                  } catch (e) {}
-                },
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.5),
-                        Colors.transparent,
-                      ],
-                      stops: const [
-                        0.0,
-                        0.33,
-                      ],
-                    ),
-                  ),
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(
-                      parent: AlwaysScrollableScrollPhysics(),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Consumer<HomeScreenViewModel>(
-                          builder: (context, viewModel, child) {
-                            if (viewModel.currentWeather == null &&
-                                viewModel.userPosition != null) {
-                              viewModel
-                                ..getCurrentWeather(
-                                  viewModel.userPosition!.latitude,
-                                  viewModel.userPosition!.longitude,
-                                )
-                                ..getWeatherForecast(
-                                  viewModel.userPosition!.latitude,
-                                  viewModel.userPosition!.longitude,
-                                );
-
-                              return const Center(
-                                child: SpinningCloudWidget(),
-                              );
-                            }
-
-                            if (viewModel.currentWeather != null &&
-                                viewModel.weatherForecast != null) {
-                              return Column(
-                                children: [
-                                  _CurrentWeatherWidget(viewModel),
-                                  _ForecastedWeatherWidget(
-                                    viewModel.weatherForecast!,
-                                    viewModel,
-                                  )
-                                ],
-                              );
-                            }
-
-                            return const Center(
-                              child: SpinningCloudWidget(),
-                            );
-                          },
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(
+                          parent: AlwaysScrollableScrollPhysics(),
                         ),
-                      ],
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Consumer<HomeScreenViewModel>(
+                              builder: (context, viewModel, child) {
+                                if (viewModel.currentWeather == null &&
+                                    viewModel.latitude != null &&
+                                    viewModel.longitude != null) {
+                                  viewModel
+                                    ..getCurrentWeather(
+                                      viewModel.latitude!,
+                                      viewModel.longitude!,
+                                    )
+                                    ..getWeatherForecast(
+                                      viewModel.latitude!,
+                                      viewModel.longitude!,
+                                    );
+
+                                  return const Center(
+                                    child: SpinningCloudWidget(),
+                                  );
+                                }
+
+                                if (viewModel.currentWeather != null &&
+                                    viewModel.weatherForecast != null) {
+                                  return Column(
+                                    children: [
+                                      _CurrentWeatherWidget(viewModel),
+                                      _ForecastedWeatherWidget(
+                                        viewModel.weatherForecast!,
+                                        viewModel,
+                                      )
+                                    ],
+                                  );
+                                }
+
+                                return const Center(
+                                  child: SpinningCloudWidget(),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

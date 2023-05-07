@@ -5,8 +5,15 @@ import 'package:sunny_day/src/model/saved_location_model.dart';
 import 'package:sunny_day/src/screens/location_search_screen/location_search_screen.dart';
 import 'package:sunny_day/src/services/shared_preferences_service.dart';
 
+typedef OnSavePlaceCallback = void Function(double latitude, double longitude);
+
 class SunnyDayDrawer extends StatefulWidget {
-  const SunnyDayDrawer({super.key});
+  const SunnyDayDrawer({
+    required this.onSavedPlaceCallback,
+    super.key,
+  });
+
+  final OnSavePlaceCallback onSavedPlaceCallback;
 
   @override
   State<SunnyDayDrawer> createState() => _SunnyDayDrawerState();
@@ -81,17 +88,30 @@ class _SunnyDayDrawerState extends State<SunnyDayDrawer> {
                   },
                   itemBuilder: (context, index) {
                     final location = _savedLocations[index];
-                    return ListTile(
-                      title: Text(
-                        location.placeName,
-                        style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                              color: secondaryColor,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      onTap: () {
-                        Navigator.pop(context, location);
+                    return Dismissible(
+                      key: UniqueKey(),
+                      onDismissed: (direction) {
+                        locator<SharedPreferencesService>()
+                            .deleteSavedLocation(_savedLocations[index]);
                       },
+                      child: ListTile(
+                        title: Text(
+                          location.placeName,
+                          style:
+                              Theme.of(context).textTheme.labelLarge!.copyWith(
+                                    color: secondaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        onTap: () {
+                          widget.onSavedPlaceCallback(
+                            location.latitude,
+                            location.longitude,
+                          );
+
+                          Navigator.pop(context, location);
+                        },
+                      ),
                     );
                   },
                 ),

@@ -47,7 +47,7 @@ class LocationService {
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    
+
     if (!serviceEnabled) {
       return null;
     }
