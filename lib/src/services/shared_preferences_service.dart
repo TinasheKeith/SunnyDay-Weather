@@ -71,6 +71,31 @@ class SharedPreferencesService {
         .toList();
   }
 
+  Future<bool> deleteSavedLocation(SavedLocation location) async {
+    final key = '$_storageKey/locations';
+    final prefs = await preferences;
+    final locations = prefs.getStringList(key) ?? <String>[];
+
+    try {
+      final existingLocationIndex = locations.indexWhere((savedLocationJson) {
+        final savedLocation = SavedLocation.fromJson(
+          jsonDecode(savedLocationJson) as Map<String, dynamic>,
+        );
+
+        return savedLocation.latitude == location.latitude &&
+            savedLocation.longitude == location.longitude &&
+            savedLocation.placeName == location.placeName;
+      });
+
+      if (existingLocationIndex >= 0) {
+        locations.removeAt(existingLocationIndex);
+        await prefs.setStringList(key, locations);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
   Future<void> saveWeatherForecast(WeatherForecast forecast) async {
     final key = '$_storageKey/weather_forecast';
     final data = jsonEncode(forecast.toJson());

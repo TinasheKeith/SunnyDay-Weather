@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs
 import 'package:flutter/widgets.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:sunny_day/constants/assets.dart';
 import 'package:sunny_day/constants/colors.dart';
 import 'package:sunny_day/src/locator.dart';
 import 'package:sunny_day/src/services/location_service.dart';
+import 'package:sunny_day/src/services/shared_preferences_service.dart';
 import 'package:sunny_day/src/services/weather_service.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
@@ -26,6 +26,8 @@ class HomeScreenViewModel extends ChangeNotifier {
         notifyListeners();
       }
     });
+
+    locator<SharedPreferencesService>().getSavedLocations();
   }
 
   final WeatherService _weatherService = locator<WeatherService>();
@@ -37,8 +39,11 @@ class HomeScreenViewModel extends ChangeNotifier {
   String _homescreenBackground = Assets.seaSunny;
   String get homescreenBackground => _homescreenBackground;
 
-  Position? _userPosition;
-  Position? get userPosition => _userPosition;
+  double? _latitude;
+  double? get latitude => _latitude;
+
+  double? _longitude;
+  double? get longitude => _longitude;
 
   LocationPermissionStatus? _locationPermissionStatus;
   LocationPermissionStatus? get locationPermissionStatus =>
@@ -80,6 +85,30 @@ class HomeScreenViewModel extends ChangeNotifier {
     } else {
       return false;
     }
+  }
+
+  Future<void> setPlace({
+    required double latitude,
+    required double longitude,
+  }) async {
+    _latitude = latitude;
+    _longitude = longitude;
+
+    await _weatherService.currentWeatherStream.first.then((value) {
+      if (_currentWeather == null) {
+        _currentWeather = value;
+        notifyListeners();
+      }
+    });
+
+    await _weatherService.weatherForecastStream.first.then((value) {
+      if (_weatherForecast == null) {
+        _weatherForecast = value;
+        notifyListeners();
+      }
+    });
+
+    notifyListeners();
   }
 
   Future<void> getCurrentWeather(double latitude, double longitude) async {
@@ -191,8 +220,13 @@ class HomeScreenViewModel extends ChangeNotifier {
   }
 
   Future<void> getUserPosition() async {
-    _userPosition = await _locationService.getCurrentPosition();
-    notifyListeners();
+    final position = await _locationService.getCurrentPosition();
+
+    if (position != null) {
+      _latitude = position.latitude;
+      _longitude = position.longitude;
+      notifyListeners();
+    }
   }
 
   @override
