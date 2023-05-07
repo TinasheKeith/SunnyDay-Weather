@@ -2,5 +2,9 @@
   "appTitle": "sunny_day",
   "@appTitle": {
     "description": "The title of the application"
+  },
+  "noInternetMessage": "No internet? Just look out the window and take a wild guess at the weather!",
+  "@noInternetMessage": {
+    "description": "No internet message when user loses connectivity."
   }
 }

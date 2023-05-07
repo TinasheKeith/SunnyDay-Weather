@@ -70,6 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Stack(
             children: [
               RefreshIndicator(
+                color: Theme.of(context).primaryColor,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                displacement: 100, //
                 onRefresh: () async {
                   final viewModel = context.read<HomeScreenViewModel>();
 
@@ -85,14 +88,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
+                        backgroundColor: Theme.of(context).primaryColor,
                         behavior: SnackBarBehavior.floating,
                         showCloseIcon: true,
                         closeIconColor: Colors.white,
-                        duration: Duration(
-                          days: 1,
+                        duration: const Duration(
+                          seconds: 2,
                         ),
-                        content: Text(
+                        content: const Text(
                           'Updated forecasts! ☀️',
                         ),
                       ),
@@ -216,7 +220,7 @@ class _CurrentWeatherWidget extends StatelessWidget {
                       text: '°C',
                       style:
                           Theme.of(context).textTheme.displayMedium!.copyWith(
-                                fontWeight: FontWeight.w300,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.white,
                               ),
                     ),
@@ -401,7 +405,7 @@ class _TemperatureTile extends StatelessWidget {
         children: [
           TextSpan(
             text: '$title ${_kelvinToCelsius(temperature).toString()}',
-            style: Theme.of(context).textTheme.displayMedium!.copyWith(
+            style: Theme.of(context).textTheme.labelMedium!.copyWith(
                   fontSize: 18,
                   color: Colors.white,
                 ),

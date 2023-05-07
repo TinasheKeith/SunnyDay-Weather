@@ -549,11 +549,9 @@ packages:
   weather_app_dart_client:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: "096d85d1be9e126edb48d87ef2a96d8f86841144"
-      url: "https://github.com/TinasheKeith/dart_open_weather_client.git"
-    source: git
+      path: "../weather_app_dart_client"
+      relative: true
+    source: path
     version: "0.1.0+1"
   win32:
     dependency: transitive
