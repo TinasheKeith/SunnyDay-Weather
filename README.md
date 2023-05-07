@@ -115,15 +115,18 @@ and although BLoC has strong benefits regarding structure, reactivity and testab
 ![search screen empty](/assets/product_images/search_empty.png)
 ![updated forecast](/assets/product_images/search_empty.png)
 
+### Improvement areas
+There are plenty of areas where I feel this project needs work:
+1. There is no CI/CD pipeline 🤦🏾‍♂️ I got started with the app a few days late and had to make omissions
+2. There is no testing 🤦🏾‍♂️🤦🏾‍♂️ not even in my open weather data client
+3. My open weather data client was very well documented, but ended up turning off the public_api_documentation lint rule for the app as I felt it was not necessary here, but would be nice.
+4. Spent too much time focused on how things are presented in the actual app, which could have been focused instead on improvement areas 1 and 2 instead. There was even a version of this app with a bottom nav at the beginning
+5. Generally spent time quite a bit of time on features that were eventually omitted
 
+### Known bugs & issues
+- There is an int -> double casting error in one of the weather models that can occur sometimes which I have found impossible to locate - so sometimes this can affect the app loading. This happens occasionally and not always but is fixable.
+- When selecting a saved location, you have to pull-to-refresh to update the view accordingly
+- I haven't handled the case where a user might not have granted Sunny Day location access
 
-
-
-# Improvements
-- localisation
-- linting
-- error handling
-- location permissions
-Contributing
-
-Contributions to this project are welcome. If you find a bug or would like to suggest a new feature, please submit an issue or pull request.
+### Contributing
+Contributions to this project are welcome. If you find a bug or would like to suggest a new feature, or you might want to try your hand at any of the above issues, 🤪 please submit a pull request :)
