@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/src/screens/home_screen/forecast_details_sheet.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
+import 'package:sunny_day/src/screens/home_screen/sunny_day_drawer.dart';
 import 'package:sunny_day/src/screens/location_search_screen/location_search_screen.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
 import 'package:sunny_day/src/shared/location_search_bar.dart';
@@ -24,26 +25,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.none) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            behavior: SnackBarBehavior.floating,
-            showCloseIcon: true,
-            closeIconColor: Colors.white,
-            duration: Duration(
-              days: 1,
+    subscription = Connectivity().onConnectivityChanged.listen(
+      (ConnectivityResult result) {
+        if (result == ConnectivityResult.none) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              behavior: SnackBarBehavior.floating,
+              showCloseIcon: true,
+              closeIconColor: Colors.white,
+              duration: Duration(
+                days: 1,
+              ),
+              content: Text(
+                // ignore: lines_longer_than_80_chars
+                'No internet? Just look out the window and take a wild guess at the weather!',
+              ),
             ),
-            content: Text(
-              // ignore: lines_longer_than_80_chars
-              'No internet? Just look out the window and take a wild guess at the weather!',
-            ),
-          ),
-        );
-      }
-    });
+          );
+        }
+      },
+    );
     super.initState();
   }
 
@@ -59,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       selector: (context, viewModel) => viewModel.themeColor,
       builder: (context, value, child) {
         return Scaffold(
+          drawer: const SunnyDayDrawer(),
           floatingActionButton: LocationSearchBar(
             onSearchFieldTapped: () {
               Navigator.of(context).pushNamed(LocationSearchScreen.id);
@@ -72,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
               RefreshIndicator(
                 color: Theme.of(context).primaryColor,
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                displacement: 100, //
+                displacement: 100,
                 onRefresh: () async {
                   final viewModel = context.read<HomeScreenViewModel>();
 

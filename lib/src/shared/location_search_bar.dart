@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
 
 class LocationSearchBar extends StatelessWidget {
   const LocationSearchBar({
@@ -28,11 +27,16 @@ class LocationSearchBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Icon(
-                LineIcons.mapAlt,
-                color: Colors.grey,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: IconButton(
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+                icon: Icon(
+                  Icons.menu_rounded,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
               ),
             ),
             Expanded(
@@ -42,7 +46,7 @@ class LocationSearchBar extends StatelessWidget {
                   readOnly: true,
                   onTap: () => onSearchFieldTapped?.call(),
                   decoration: const InputDecoration.collapsed(
-                    hintText: 'Search for city',
+                    hintText: 'search for a city, suburb, or airport!',
                     fillColor: Colors.white,
                     hintStyle: TextStyle(
                       color: Colors.grey,

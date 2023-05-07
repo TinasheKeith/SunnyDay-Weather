@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_places_autocomplete_text_field/google_places_autocomplete_text_field.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:sunny_day/constants/keys.dart';
+import 'package:sunny_day/src/locator.dart';
+import 'package:sunny_day/src/model/saved_location_model.dart';
+import 'package:sunny_day/src/services/shared_preferences_service.dart';
 
 class LocationSearchScreen extends StatelessWidget {
   LocationSearchScreen({super.key});
@@ -13,16 +16,16 @@ class LocationSearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () => Navigator.of(context).pop(),
-          child: const Icon(
+          child: Icon(
             LineIcons.arrowLeft,
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.secondary,
           ),
         ),
-        backgroundColor: Theme.of(context).canvasColor,
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -34,8 +37,12 @@ class LocationSearchScreen extends StatelessWidget {
                 child: GooglePlacesAutoCompleteTextFormField(
                   autofocus: true,
                   enableInteractiveSelection: true,
+                  cursorColor: Theme.of(context).colorScheme.secondary,
                   inputDecoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: Icon(
+                      LineIcons.mapAlt,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
                     hintText: 'search for a city, suburb, or airport!',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -45,12 +52,24 @@ class LocationSearchScreen extends StatelessWidget {
                   textEditingController: _controller,
                   googleAPIKey: Keys.googlePlacesKey,
                   debounceTime: 400,
-                  getPlaceDetailWithLatLng: (prediction) {},
+                  getPlaceDetailWithLatLng: (prediction) async {
+                    if (prediction.lat != null && prediction.lng != null) {
+                      await locator<SharedPreferencesService>().saveLocation(
+                        SavedLocation(
+                          latitude: double.parse(prediction.lat!),
+                          longitude: double.parse(prediction.lng!),
+                          placeName: prediction.description!,
+                        ),
+                      );
+                    }
+                  },
                   itmClick: (prediction) {
                     _controller
                       ..text = prediction.description!
                       ..selection = TextSelection.fromPosition(
-                        TextPosition(offset: prediction.description!.length),
+                        TextPosition(
+                          offset: prediction.description!.length,
+                        ),
                       );
                   },
                 ),
