@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static final ThemeData themeData = ThemeData(
     primaryColor: const Color(0xFF213056),
-    accentColor: const Color(0xFFFFA500),
+    canvasColor: const Color(0xFFF5F5F5),
     scaffoldBackgroundColor: const Color(0xFFF5F5F5),
     textTheme: GoogleFonts.latoTextTheme().copyWith(
       displayLarge: GoogleFonts.lato(
@@ -48,10 +48,8 @@ class AppTheme {
         color: Colors.black,
       ),
     ),
-  );
-
-  static final BoxDecoration boxDecoration = BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    color: const Color(0x1AFF6347),
+    colorScheme: ColorScheme.fromSwatch().copyWith(
+      secondary: const Color(0xFFFFA500),
+    ),
   );
 }

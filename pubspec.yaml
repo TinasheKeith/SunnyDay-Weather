@@ -24,11 +24,9 @@ dependencies:
   provider: 6.0.5
   shared_preferences: 2.1.0
   weather_app_dart_client:
-    path: ../weather_app_dart_client
-  # weather_app_dart_client:
-  #   git:
-  #     url: https://github.com/TinasheKeith/dart_open_weather_client.git
-  #     ref: main
+    git:
+      url: https://github.com/TinasheKeith/dart_open_weather_client.git
+      ref: main
 
 dev_dependencies:
   flutter_lints: 2.0.0
