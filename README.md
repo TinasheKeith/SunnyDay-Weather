@@ -106,6 +106,18 @@ and although BLoC has strong benefits regarding structure, reactivity and testab
 
 * For linting, I chose to go with VeryGoodAnalysis [https://verygood.ventures/blog/introducing-very-good-analysis], built and maintained by the very well known VeryGoodVentures. 
 
+### Sunny Day screenshots
+![sunny screen](/assets/product_images/sunny_screen.png)
+![rainy screen](/assets/product_images/rainy_screen.png)
+![detail sheet lowered](/assets/product_images/detail_sheet_lowered.png)
+![google places auto complete](/assets/product_images/google_places_autocomplete.png)
+![saved locations](/assets/product_images/saved_location.png)
+![search screen empty](/assets/product_images/search_empty.png)
+![updated forecast](/assets/product_images/search_empty.png)
+
+
+
+
 
 # Improvements
 - localisation
