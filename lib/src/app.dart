@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen.dart';
 
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
+import 'package:sunny_day/src/screens/location_search_screen/location_search_screen.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -35,6 +36,7 @@ class _AppState extends State<App> {
       onGenerateTitle: (BuildContext context) =>
           AppLocalizations.of(context)!.appTitle,
       theme: ThemeData(
+        canvasColor: const Color(0xFFF5F5F5),
         textTheme: GoogleFonts.latoTextTheme(),
       ),
       initialRoute: '/',
@@ -50,6 +52,10 @@ class _AppState extends State<App> {
                 ],
                 child: const HomeScreen(),
               ),
+            );
+          case LocationSearchScreen.id:
+            return MaterialPageRoute(
+              builder: (_) => LocationSearchScreen(),
             );
           default:
             return MaterialPageRoute(

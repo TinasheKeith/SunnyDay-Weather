@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sunny_day/src/screens/home_screen/forecast_details_sheet.dart';
 import 'package:sunny_day/src/screens/home_screen/home_screen_view_model.dart';
+import 'package:sunny_day/src/screens/location_search_screen/location_search_screen.dart';
 import 'package:sunny_day/src/shared/loading_widget.dart';
+import 'package:sunny_day/src/shared/location_search_bar.dart';
 import 'package:weather_app_dart_client/weather_app_dart_client.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,6 +59,13 @@ class _HomeScreenState extends State<HomeScreen> {
       selector: (context, viewModel) => viewModel.themeColor,
       builder: (context, value, child) {
         return Scaffold(
+          floatingActionButton: LocationSearchBar(
+            onSearchFieldTapped: () {
+              Navigator.of(context).pushNamed(LocationSearchScreen.id);
+            },
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
           backgroundColor: Color(value),
           body: Stack(
             children: [
@@ -258,6 +267,7 @@ class _ForecastedWeatherWidget extends StatelessWidget {
   final WeatherForecast forecast;
   final HomeScreenViewModel _viewModel;
 
+  // FIXME: This is less than ideal
   static final List<String> _daysOfWeek = [
     'Monday',
     'Tuesday',

@@ -4,4 +4,7 @@
 class Keys {
   /// The API key for the OpenWeather API.
   static const openWeatherKey = String.fromEnvironment('OPEN_WEATHER_KEY');
+
+  /// The API key for GooglePlaces API
+  static const googlePlacesKey = String.fromEnvironment('GOOGLE_PLACES_KEY');
 }
