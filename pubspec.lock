@@ -205,6 +205,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.4"
+  google_places_autocomplete_text_field:
+    dependency: "direct main"
+    description:
+      name: google_places_autocomplete_text_field
+      sha256: "52c48091c27f9e1dda8a394829dcd5fe3cd0693dc186382da4cab52ab32452ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   http:
     dependency: transitive
     description:
@@ -397,6 +405,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   shared_preferences:
     dependency: "direct main"
     description:

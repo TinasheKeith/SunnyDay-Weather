@@ -9,7 +9,9 @@
         "args": [
             "--dart-define=FLAVOR=dev",
             "--dart-define",
-           "OPEN_WEATHER_KEY=f45916370e0adb05b5a7c3850178762a"
+           "OPEN_WEATHER_KEY=f45916370e0adb05b5a7c3850178762a",
+           "--dart-define",
+           "GOOGLE_PLACES_KEY=AIzaSyBebg51e9x06bP2OLzTatqrc8hMWe1c19g"
         ],
       },
       {
@@ -20,7 +22,10 @@
         "args": [
             "--dart-define=FLAVOR=staging",
             "--dart-define",
-           "OPEN_WEATHER_KEY=0342aac85d92c9e63a468497d7bb1b0e"
+           "OPEN_WEATHER_KEY=0342aac85d92c9e63a468497d7bb1b0e",
+           "--dart-define",
+           "GOOGLE_PLACES_KEY=AIzaSyBebg51e9x06bP2OLzTatqrc8hMWe1c19g"
+
         ],
       },
       {
@@ -32,7 +37,9 @@
             "--flavor",
             "prod",
             "--dart-define",
-           "OPEN_WEATHER_KEY=0ade06c01e13b43362d217ca33e4a856"
+           "OPEN_WEATHER_KEY=0ade06c01e13b43362d217ca33e4a856",
+           "--dart-define",
+           "GOOGLE_PLACES_KEY=AIzaSyBebg51e9x06bP2OLzTatqrc8hMWe1c19g"
         ],
       }
     ]

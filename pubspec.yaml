@@ -11,10 +11,6 @@ environment:
 
 dependencies:
   connectivity_plus: 3.0.6
-  weather_app_dart_client:
-    git:
-      url: https://github.com/TinasheKeith/dart_open_weather_client.git
-      ref: main
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -22,11 +18,15 @@ dependencies:
   geolocator: 9.0.2
   get_it: 7.3.0
   google_fonts: 4.0.4
+  google_places_autocomplete_text_field: 0.0.3
   line_icons: 2.0.1
   logger: 1.3.0
   provider: 6.0.5
   shared_preferences: 2.1.0
-
+  weather_app_dart_client:
+    git:
+      url: https://github.com/TinasheKeith/dart_open_weather_client.git
+      ref: main
 
 dev_dependencies:
   flutter_lints: 2.0.0
